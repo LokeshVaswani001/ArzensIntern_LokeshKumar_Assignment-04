@@ -1,0 +1,4 @@
+model,best_cv_score,best_params,train_time_sec,val_precision_macro,val_recall_macro,val_f1_macro,is_best_model,model_version
+random_forest,0.9574318733578012,"{""n_estimators"": 120, ""min_samples_split"": 2, ""max_depth"": 18}",48.23,0.9275,0.9278,0.927,True,v1.0_20260801
+xgboost,0.9611105116351855,"{""subsample"": 0.8, ""n_estimators"": 60, ""max_depth"": 4, ""learning_rate"": 0.1}",12.01,0.9151,0.9363,0.9231,False,v1.0_20260801
+neural_network,0.9566478037977945,"{""hidden_layer_sizes"": [128, 64], ""alpha"": 0.001}",12.74,0.9103,0.9383,0.9218,False,v1.0_20260801

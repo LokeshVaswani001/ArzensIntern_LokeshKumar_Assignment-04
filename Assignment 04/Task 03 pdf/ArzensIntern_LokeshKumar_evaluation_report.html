@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Model Evaluation Report</title>
+<style>
+body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 40px; color: #1c1c1e; background: #fafafa; }
+h1 { color: #1F4E79; margin-bottom: 4px; }
+h2 { color: #1F4E79; border-bottom: 2px solid #e8eef5; padding-bottom: 6px; }
+.subtitle { color: #555; margin-top: 0; }
+section { background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px 24px; margin: 20px 0; }
+table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; font-size: 13.5px; }
+th { background: #1F4E79; color: white; }
+.metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 10px; }
+.metric-box { background: #E8EEF5; border-radius: 6px; padding: 12px; text-align: center; }
+.metric-box .val { font-size: 22px; font-weight: bold; color: #1F4E79; }
+.metric-box .lbl { font-size: 12px; color: #555; }
+img { max-width: 100%; border: 1px solid #eee; border-radius: 6px; margin-top: 8px; }
+.status-badge { display: inline-block; padding: 6px 16px; border-radius: 6px; color: white; font-weight: bold; background: #1a7f37; }
+code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; }
+</style></head><body>
+
+<h1>Model Evaluation Report</h1>
+<p class="subtitle">Dataset: network_traffic_dataset.csv (CICIDS2017-structured) &nbsp;|&nbsp; Model: random_forest v1.0_20260801</p>
+
+<section>
+<h2>1. Performance Metrics (Test Set, n=8250)</h2>
+<div class="metric-grid">
+  <div class="metric-box"><div class="val">99.4%</div><div class="lbl">Accuracy</div></div>
+  <div class="metric-box"><div class="val">92.8%</div><div class="lbl">Precision (macro)</div></div>
+  <div class="metric-box"><div class="val">95.1%</div><div class="lbl">Recall (macro)</div></div>
+  <div class="metric-box"><div class="val">0.937</div><div class="lbl">F1 (macro)</div></div>
+  <div class="metric-box"><div class="val">0.999</div><div class="lbl">ROC-AUC (macro OVR)</div></div>
+  <div class="metric-box"><div class="val">0.947</div><div class="lbl">PR-AUC (macro OVR)</div></div>
+  <div class="metric-box"><div class="val">0.4%</div><div class="lbl">False Positive Rate</div></div>
+  <div class="metric-box"><div class="val">1.3%</div><div class="lbl">False Negative Rate</div></div>
+</div>
+<p style="margin-top:14px;">Binary (Attack vs. Benign) alerting view: ROC-AUC = 0.9994, PR-AUC = 0.9982, Cost-sensitive score (FN weighted 5x FP) = 0.9908.</p>
+<p>Confusion (binary): TN=6547, FP=27, FN=22, TP=1654</p>
+</section>
+
+<section>
+<h2>2. Per-Class Metrics (sorted by recall — hardest-to-detect classes first)</h2>
+<table><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr><tr><td>Botnet</td><td>0.6444</td><td>0.8529</td><td>0.7342</td><td>34</td></tr><tr><td>WebAttack</td><td>0.8957</td><td>0.8583</td><td>0.8766</td><td>120</td></tr><tr><td>Infiltration</td><td>0.9615</td><td>0.9615</td><td>0.9615</td><td>52</td></tr><tr><td>BruteForce</td><td>0.9941</td><td>0.9882</td><td>0.9912</td><td>170</td></tr><tr><td>BENIGN</td><td>0.9967</td><td>0.9959</td><td>0.9963</td><td>6574</td></tr><tr><td>DoS</td><td>1.0</td><td>1.0</td><td>1.0</td><td>840</td></tr><tr><td>PortScan</td><td>1.0</td><td>1.0</td><td>1.0</td><td>460</td></tr></table>
+</section>
+
+<section>
+<h2>3. Model Comparison</h2>
+<table><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC-AUC</th><th>PR-AUC</th><th>Training Time (s)</th></tr><tr><td>random_forest</td><td>0.9936</td><td>0.9275</td><td>0.951</td><td>0.9371</td><td>0.999</td><td>0.9471</td><td>39.8</td></tr><tr><td>neural_network</td><td>0.9916</td><td>0.8952</td><td>0.9693</td><td>0.9244</td><td>0.9994</td><td>0.9575</td><td>10.1</td></tr><tr><td>xgboost</td><td>0.9915</td><td>0.9032</td><td>0.9538</td><td>0.9222</td><td>0.9992</td><td>0.9469</td><td>9.2</td></tr></table>
+<p style="margin-top:10px;">Best model selected: <b>random_forest</b> — chosen for the strongest macro-F1 on the held-out validation split (Task 2), balancing recall on rare attack classes against precision for alert volume.</p>
+</section>
+
+<section>
+<h2>4. Threshold Analysis (Attack vs. Benign alerting)</h2>
+<table><tr><th>Threshold</th><th>Precision</th><th>Recall</th><th>F1</th></tr><tr><td>0.3</td><td>0.9663</td><td>0.9916</td><td>0.9788</td></tr><tr><td>0.5</td><td>0.9834</td><td>0.9875</td><td>0.9854</td></tr><tr><td>0.7</td><td>0.9909</td><td>0.9761</td><td>0.9835</td></tr></table>
+<p><b>Recommended production threshold: 0.6</b> (F1=0.9856) — chosen to maximize F1 on the binary attack-detection view, balancing missed-threat risk against alert volume.</p>
+<img src="shap_analysis/precision_recall_vs_threshold.png" alt="PR vs threshold">
+<img src="shap_analysis/roc_pr_curves.png" alt="ROC and PR curves">
+</section>
+
+<section>
+<h2>5. Model Interpretability (SHAP)</h2>
+<h3>Global: Top 10 most important features</h3>
+<ol><li>Total Fwd Packets</li><li>Fwd Header Length</li><li>Max Packet Length</li><li>Fwd Packets/s</li><li>Packet Length Std</li><li>Packet Length Mean</li><li>Average Packet Size</li><li>Bwd Header Length</li><li>Total Backward Packets</li><li>Down/Up Ratio</li></ol>
+<img src="shap_analysis/summary_plot.png" alt="SHAP summary plot">
+<p>Dependence plots for the top 3 features are saved in <code>shap_analysis/dependence_plots/</code>.</p>
+
+<h3>Local: Example predictions (2 TP, 2 FP, 1 FN)</h3>
+<table><tr><th>Type</th><th>Predicted</th><th>Actual</th><th>Explanation</th></tr><tr><td>TP</td><td>DoS</td><td>DoS</td><td>Predicted: DoS | Actual: DoS. Top contributing factors: Max Packet Length increased the likelihood of the predicted class (SHAP=+0.112); Fwd Packets/s increased the likelihood of the predicted class (SHAP=+0.105); Total Fwd Packets increased the likelihood of the predicted class (SHAP=+0.105).</td></tr><tr><td>TP</td><td>DoS</td><td>DoS</td><td>Predicted: DoS | Actual: DoS. Top contributing factors: Total Fwd Packets increased the likelihood of the predicted class (SHAP=+0.146); Fwd Header Length increased the likelihood of the predicted class (SHAP=+0.123); Fwd Packets/s increased the likelihood of the predicted class (SHAP=+0.106).</td></tr><tr><td>FP</td><td>BruteForce</td><td>BENIGN</td><td>Predicted: BruteForce | Actual: BENIGN. Top contributing factors: Bwd Header Length increased the likelihood of the predicted class (SHAP=+0.058); Max Packet Length increased the likelihood of the predicted class (SHAP=+0.057); Total Backward Packets increased the likelihood of the predicted class (SHAP=+0.055).</td></tr><tr><td>FP</td><td>Botnet</td><td>BENIGN</td><td>Predicted: Botnet | Actual: BENIGN. Top contributing factors: Packet Length Mean increased the likelihood of the predicted class (SHAP=+0.121); Packet Length Std increased the likelihood of the predicted class (SHAP=+0.075); Average Packet Size increased the likelihood of the predicted class (SHAP=+0.058).</td></tr><tr><td>FN</td><td>BENIGN</td><td>Botnet</td><td>Predicted: BENIGN | Actual: Botnet. Top contributing factors: Flow Duration decreased the likelihood of the predicted class (SHAP=-0.029); Max Packet Length decreased the likelihood of the predicted class (SHAP=-0.027); Packet Length Std decreased the likelihood of the predicted class (SHAP=-0.026).</td></tr></table>
+<p>Corresponding force-plot-style visualizations are saved in <code>shap_analysis/force_plots_for_examples/</code>.</p>
+</section>
+
+<section>
+<h2>6. Error Analysis</h2>
+<img src="shap_analysis/confusion_matrix.png" alt="Confusion matrix">
+<p><b>False positives (27 rows):</b> benign flows most resembling attacks tend to show elevated values (relative to their scaled mean) in:</p>
+<ul><li>Total Backward Packets: 0.493</li><li>Bwd Header Length: 0.493</li><li>Total Length of Bwd Packets: 0.02</li><li>Down/Up Ratio: 0.016</li><li>Flow Packets/s: -0.022</li></ul>
+<p><b>False negatives (22 rows) — attacks that evaded detection, by type:</b></p>
+<ul><li>WebAttack: 16 missed</li><li>Botnet: 5 missed</li><li>Infiltration: 1 missed</li></ul>
+<p><b>Recommendations for model improvement:</b></p>
+<ul>
+<li>Collect more labeled examples of the hardest-to-detect attack classes identified in Section 2 (typically the rarest classes, e.g. Infiltration/Botnet) to reduce false negatives.</li>
+<li>Consider a two-stage detector: a high-recall first-stage filter (low threshold) followed by a higher-precision second-stage classifier for alert triage, reducing analyst-facing false positives without lowering overall recall.</li>
+<li>Periodically retrain on recent traffic to correct for the false-positive-prone feature patterns identified above, which may reflect legitimate but evolving benign usage.</li>
+</ul>
+</section>
+
+<section>
+<h2>7. Production Readiness Check</h2>
+<p>Status: <span class="status-badge">APPROVED</span></p>
+<ul>
+<li>Inference latency: 6.289 ms/sample (meets the &lt;10ms real-time requirement)</li>
+<li>Model size on disk: 10.33 MB (meets the &lt;100MB preferred limit)</li>
+<li>Robustness (drift check): accuracy on Gaussian-perturbed test features (σ=0.05 on scaled inputs) = 89.1% vs. 99.4% on clean test data (Δ=10.2 pts)</li>
+</ul>
+</section>
+
+<section>
+<h2>Recommendations</h2>
+<ol>
+<li>Deploy with threshold=0.6 for the production alerting pipeline.</li>
+<li>Monitor the top SHAP features (Section 5) for drift using the quality/drift validator built in the earlier Track 09 submission.</li>
+<li>Retrain periodically as new attack samples and evolving benign traffic patterns become available.</li>
+</ol>
+</section>
+
+</body></html>

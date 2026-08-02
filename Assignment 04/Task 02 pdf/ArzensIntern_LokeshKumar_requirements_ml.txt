@@ -1,0 +1,13 @@
+# requirements_ml.txt
+# Pinned dependencies for Assignment 4 — ML Threat Detection pipeline.
+# Install with: pip install -r requirements_ml.txt
+
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.8.0
+xgboost==3.3.0
+imbalanced-learn==0.14.2
+matplotlib==3.10.8
+seaborn==0.13.2
+joblib==1.5.3
+PyYAML==6.0.3

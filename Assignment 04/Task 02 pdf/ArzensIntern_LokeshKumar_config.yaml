@@ -1,0 +1,62 @@
+# config.yaml
+# Configuration for Assignment 4 — ML Threat Detection training pipeline.
+# All hyperparameters and pipeline settings live here so that train_model.py
+# and evaluate_model.py remain free of hardcoded "magic numbers".
+
+data:
+  raw_path: "network_traffic_dataset.csv"
+  label_column: "Label"
+  # BENIGN vs everything else (binary) OR keep full multi-class.
+  task_type: "multiclass"     # "binary" or "multiclass"
+  test_size: 0.15
+  val_size: 0.15               # taken from the remaining train split -> ~70/15/15 overall
+  random_state: 42
+
+preprocessing:
+  scaler: "standard"           # "standard" or "minmax"
+  missing_value_strategy: "median"
+  drop_duplicates: true
+  imbalance_strategy: "smote"  # "smote", "class_weight", or "none"
+  smote_k_neighbors: 5
+  feature_selection:
+    enabled: true
+    method: "mutual_information"
+    top_k: 30
+
+models:
+  random_forest:
+    enabled: true
+    param_grid:
+      n_estimators: [60, 120]
+      max_depth: [10, 18]
+      min_samples_split: [2, 5]
+
+  xgboost:
+    enabled: true
+    param_grid:
+      n_estimators: [60, 120]
+      max_depth: [4, 6]
+      learning_rate: [0.1, 0.2]
+      subsample: [0.8, 1.0]
+
+  neural_network:
+    enabled: true
+    # Implemented via sklearn.neural_network.MLPClassifier (Input -> Dense(128)
+    # -> Dropout-equivalent via alpha regularization -> Dense(64) -> Output),
+    # avoiding a heavyweight TensorFlow/PyTorch dependency for this baseline.
+    hidden_layer_sizes: [128, 64]
+    alpha: 0.001
+    max_iter: 120
+
+training:
+  cv_folds: 3
+  scoring: "f1_macro"
+  n_jobs: 1
+
+output:
+  model_dir: "model_artifacts"
+  best_model_file: "best_model.pkl"
+  preprocessing_pipeline_file: "preprocessing_pipeline.pkl"
+  feature_list_file: "feature_list.txt"
+  training_log_file: "training_log.csv"
+  model_version: "v1.0_20260801"

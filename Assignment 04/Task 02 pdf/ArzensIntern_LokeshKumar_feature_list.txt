@@ -1,0 +1,30 @@
+Flow Duration
+Total Fwd Packets
+Total Backward Packets
+Total Length of Bwd Packets
+Fwd Packet Length Max
+Fwd Packet Length Min
+Fwd Packet Length Mean
+Fwd Packet Length Std
+Bwd Packet Length Max
+Bwd Packet Length Min
+Bwd Packet Length Mean
+Bwd Packet Length Std
+Flow Packets/s
+Flow IAT Mean
+Flow IAT Min
+Fwd IAT Total
+Fwd IAT Mean
+Fwd IAT Std
+Fwd IAT Max
+Fwd IAT Min
+Bwd IAT Total
+Fwd Header Length
+Bwd Header Length
+Fwd Packets/s
+Min Packet Length
+Max Packet Length
+Packet Length Mean
+Packet Length Std
+Down/Up Ratio
+Average Packet Size
